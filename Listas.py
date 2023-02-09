@@ -324,6 +324,9 @@ print('linha 321: A conta1 é igual a conta2?', conta1 == conta2)
 
 print('') # Criando um nova classe para conta salário, agora com a implementação da funçao de
           # comparações nos elementos específico nos objetos
+from functools import total_ordering
+
+@total_ordering
 class ContaSalario:
 
     def __init__(self, codigo):
@@ -331,11 +334,15 @@ class ContaSalario:
         self._saldo = 0
 
     def __eq__(self, outro):
-        return self._codigo == outro._codigo
-
-    def __eq__(self, outro):
         if type(outro) != ContaSalario:
             return False
+        return self._codigo == outro._codigo and self._saldo == outro._saldo
+
+    def __lt__(self, outro):
+        if self._saldo != outro._saldo:
+            return self._codigo <= outro._codigo
+        return self._codigo < outro._codigo
+
     def deposita(self, valor):
         self._saldo += valor
 
@@ -422,3 +429,64 @@ print('') #
 print('linha 422:', idades)
 
 print('') # 
+nomes = ['Guilherme', 'Daniela', 'Paulo']
+print('linha 425:', sorted(nomes))
+
+print('') #
+conta_do_gui = ContaSalario(17)
+conta_do_gui.deposita(500)
+
+conta_da_Dani = ContaSalario(17)
+conta_da_Dani.deposita(1000)
+
+conta_do_paulo = ContaSalario(133)
+conta_do_paulo.deposita(510)
+
+contas = [conta_do_gui, conta_da_Dani, conta_do_paulo]
+
+for conta in contas:
+    print('linha 440:', conta)
+
+def extrai_saldo(conta):
+    return conta._saldo
+
+print('') #
+for conta in sorted(contas, key=extrai_saldo):
+    print('linha 447:', conta)
+
+print('') #
+from operator import attrgetter
+
+for conta in sorted(contas, key=attrgetter('_saldo')):
+    print('linha 453:', conta)
+
+print('') #
+print(conta_do_gui < conta_da_Dani)
+print(conta_do_gui > conta_da_Dani)
+
+print('') #
+for conta in sorted(contas,reverse=True):
+    print('linha 464:', conta)
+
+conta_do_guilherme = ContaSalario(104)
+conta_do_guilherme.deposita(100)
+
+conta_da_daniela = ContaSalario(104)
+conta_da_daniela.deposita(1000)
+
+conta_do_paulo = ContaSalario(133)
+conta_do_paulo.deposita(500)
+
+
+print('') #
+contas = [conta_do_guilherme, conta_da_daniela, conta_do_paulo]
+
+print('') #
+for conta in sorted(contas):
+    print('linha 482:', conta)
+
+print('') #
+print(
+    'linha 493: A conta salário do Gui é menou ou igual a conta salário da Dani?',
+    conta_do_guilherme <= conta_da_daniela
+)
